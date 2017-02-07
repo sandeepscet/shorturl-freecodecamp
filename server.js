@@ -1,14 +1,52 @@
 var express = require('express')
 var app = express()
-var moment = require('moment');
+var mongoUtil = require('./mongoUtil.js');
 
-app.get('/:datestring', function(req,res) {
-  var myDate;
-  if(/^\d{8,}$/.test(req.params.datestring)) {
-    myDate = moment(req.params.datestring, "X");
+
+var doc = {
+  id: 1, url:'https://google.com'
+}
+
+mongoUtil.mongoInsert(doc,function(data){
+        console.log(data);
+        console.log('inserted');
+});
+
+mongoUtil.mongoFindById(1,function(data){
+        console.log(data);
+        console.log('findById');
+});
+
+mongoUtil.mongoFindByUrl('https://google.com',function(data){
+        console.log(data);
+        console.log('findByUrl');
+});
+
+mongoUtil.mongoGetLastinsertedRecored(function(data){
+        console.log(data);
+        console.log('lastInseted');
+});
+
+
+app.get('/:id', function(req,res) {
+var myDate = '';
+  if(myDate.isValid()) {
+    res.json({
+      unix: myDate.format("X"),
+      natural: myDate.format("MMMM D, YYYY")
+    });
   } else {
-    myDate = moment(req.params.datestring, "MMMM D, YYYY");
+    res.json({
+      unix: null,
+      natural: null
+    });
   }
+
+
+});
+
+
+app.get('/new/*', function(req,res) {
 
   if(myDate.isValid()) {
     res.json({
@@ -24,6 +62,7 @@ app.get('/:datestring', function(req,res) {
 
 
 });
+
 
 
 
